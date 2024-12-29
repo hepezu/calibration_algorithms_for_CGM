@@ -1,0 +1,21 @@
+---
+title: 考虑漂变的相关回归模型
+---
+
+## 考虑漂变的相关回归模型
+
+[Toward Calibration-Free Continuous Glucose Monitoring Sensors: Bayesian Calibration Approach Applied to Next-Generation Dexcom Technology](https://doi.org/10.1089/dia.2017.0297)
+
+此类模型考虑了传感器的漂变，以及血糖和组织液葡萄糖的变化关系，稳健性较好，同时，只需设备具有较好的稳健性，即可实现工厂校准。
+
+## 实现
+
+`fitting _multi_ist_directConvolution.py`实现以上模型，但没有继续实现其中的User calibration部分，原因见上。该模型逆推结果的平均绝对相对误差(mean absolute relative difference，MARD)约为9.5%，且拟合参数和逆推结果均较为稳定。
+
+另外，下述文献：
+
+1. Reduction of Blood Glucose Measurements to Calibrate Subcutaneous Glucose Sensors: a Bayesian Multi-day Framework，
+2. On-line calibration of glucose sensors from the measured current by a time-varying calibration function and Bayesian priors
+3. Predicting Subcutaneous Glucose Concentration in Humans: Data-Driven Glucose Modeling
+
+都可以看作是第一篇文献的变种，就不一一实现了。其中1的一些用于拟合的函数没有公开，也不能复现。

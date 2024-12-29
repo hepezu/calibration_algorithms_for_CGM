@@ -1,0 +1,21 @@
+---
+title: Bayesian Regression Model Considering Drift
+---
+
+## Bayesian Regression Model Considering Drift
+
+[Toward Calibration-Free Continuous Glucose Monitoring Sensors: Bayesian Calibration Approach Applied to Next-Generation Dexcom Technology](https://doi.org/10.1089/dia.2017.0297)
+
+These models take into account the drift of the sensor, as well as the relationship between blood glucose and interstitial fluid glucose, demonstrating good robustness. Additionally, as long as the device has good robustness, factory calibration can be achieved.
+
+## Implementation
+
+`fitting_multi_ist_directConvolution.py` implements the above model, but the User calibration part has not been further developed, as mentioned above. The mean absolute relative difference (MARD) of the backward prediction results for this model is approximately 9.5%, and both the fitting parameters and the backward prediction results are relatively stable.
+
+Additionally, the following literature:
+
+1. Reduction of Blood Glucose Measurements to Calibrate Subcutaneous Glucose Sensors: a Bayesian Multi-day Framework,
+2. On-line calibration of glucose sensors from the measured current by a time-varying calibration function and Bayesian priors,
+3. Predicting Subcutaneous Glucose Concentration in Humans: Data-Driven Glucose Modeling
+
+can all be considered variations of the first article, so they will not be implemented one by one. Some of the functions used for fitting in reference 1 are not publicly available and cannot be reproduced.

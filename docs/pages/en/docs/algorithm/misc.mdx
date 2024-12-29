@@ -1,0 +1,11 @@
+---
+title: Misc
+---
+
+## Misc
+
+### Deconvolution
+`deconvovle.py`, `deconvovle_revised.py`, and `deconvolution_method.py` implement the deconvolution algorithm from "Nonparametric Input Estimation in Physiological Systems: Problems, Methods, and Case Studies", where `deconvovle_revised.py` and `deconvolution_method.py` provide better encapsulation.
+
+### MLP
+`sklearn_MLP_model.py` directly uses the sklearn MLPRegressor module to implement a simple MLP model that predicts blood glucose values from an ist sequence (length of 15). The average absolute relative difference (MARD) of the model's inverse prediction results is approximately 7.9%. Increasing the number of hidden layers and using longer ist sequences yields limited improvement in the inverse prediction results.

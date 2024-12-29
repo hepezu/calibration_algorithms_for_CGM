@@ -1,0 +1,11 @@
+---
+title: 其他
+---
+
+## 其他
+
+### Deconvolution
+`deconvovle.py`，`deconvovle_revised.py`和deconvution_method.py`实现了Nonparametric Input Estimation in Physiological Systems: Problems, Methods, and Case Studies中的反卷积算法，其中deconvovle_revised.py和deconvution_method.py做了较好的封装。
+
+### MLP
+`sklearn_MLP_model.py`，则直接用sklearn的MLPregressor模块，简单实现了一个ist序列（长度为15）到血糖值的MLP模型，该模型逆推结果的平均绝对相对误差(mean absolute relative difference，MARD)约为7.9%。增加模型的隐藏层数和输入更长ist序列，逆推效果改善有限。
