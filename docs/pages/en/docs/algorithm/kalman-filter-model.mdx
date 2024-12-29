@@ -1,0 +1,39 @@
+---
+title: Kalman Filter-Based Model
+---
+
+## Kalman Filter-Based Model
+
+[The extended Kalman filter for continuous glucose monitoring](https://doi.org/10.1089/dia.2005.7.15)
+
+This method establishes a Kalman filter model for blood glucose, interstitial fluid glucose, and other parameters. After inputting data for calibrating blood glucose values, the algorithm can continuously output predicted blood glucose signals by combining the measured electrical signals.
+
+## Kalman Filter
+
+The Extended Kalman Filter (EKF) is an algorithm used to estimate the states of nonlinear systems. It is an extension of the Kalman filter, designed to handle cases where both the system model and the observation model are nonlinear. EKF approximates the calculations of the Kalman filter by linearizing the nonlinear model, allowing it to be applied to a broader range of dynamic systems.
+
+The working principle of the Extended Kalman Filter (EKF) mainly includes the following steps:
+
+1. **Linearization of Nonlinear Functions**: EKF first linearizes the nonlinear system, typically achieved through Taylor series expansion, retaining only the first-order derivative terms (discarding second-order and higher terms) to obtain an approximate linearized model.
+
+2. **Constructing the Linearized Model**: The nonlinear function is expanded around the filter value into a Taylor series, omitting second-order and higher terms to obtain an approximate linearized model.
+
+3. **Prediction Step**: Based on the system dynamic model, the state vector for the next time step is predicted. This involves calculating the Jacobian matrices of the state transition and observation matrices, which replace the state transition matrix and observation matrix in the linear model of the Kalman filter.
+
+4. **Update Step**: Based on the observation data, the Kalman gain is calculated, and the state vector is updated. This step involves calculating the difference between the actual sensor measurements and the predicted sensor measurements, then using this difference to update the state estimate.
+
+5. **Calculation of Kalman Gain**: In the update step, the Kalman gain is calculated, which is a function of the prediction error covariance and the observation model error covariance, used to determine the weights of the predicted state and observation data in the final state estimate.
+
+6. **Iterative Process**: In some cases, the EKF may iterate to improve the accuracy of the estimates. This process involves updating the state estimates and Kalman gain in each iteration until the improvement between consecutive iterations becomes very small.
+
+7. **Stability and Error Control**: The design of the EKF ensures that under certain conditions, the estimation error remains bounded, which involves the properties of the covariance matrices of process noise and observation noise.
+
+In this way, EKF transforms nonlinear problems into linear ones, leveraging the advantages of the Kalman filter for state estimation and filtering, thereby providing accurate state estimates in systems with nonlinear factors.
+
+## Limitations
+
+Many parameters of this model cannot be directly learned from the data and require human estimation, leading to a significant degree of randomness.
+
+## Implementation
+
+`EKF.py` implements the Kalman filter model, which shows significant drift in the backward prediction values after running for a long time and is highly sensitive to preset parameters. Due to the stability issues of the model, further validation of the model results and accuracy was not conducted.

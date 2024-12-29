@@ -1,0 +1,83 @@
+---
+title: Calibration Algorithm
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+## Overview
+
+In CGM measurements, the strength of the signal has a positive correlation with the glucose concentration in the interstitial fluid. An algorithm (calibration algorithm) is needed to infer the glucose concentration in the interstitial fluid, and further, it can also infer the glucose concentration in the blood.
+
+The calibration process can be divided into: user calibration and factory calibration.
+
+### 1. User Calibration
+
+User calibration requires the user to use a blood glucose meter to measure blood glucose data at a specific moment, and then input that data into the CGM. The algorithm relies on this standard data to adjust the output values and correct deviations caused by various factors.
+
+User calibration requires users to periodically measure their blood glucose levels, which can lead to poor user compliance and a suboptimal user experience. Additionally, if the user does not operate the meter correctly during measurement, the measured values may have significant deviations, resulting in distorted inferred glucose concentrations.
+
+### 2. Factory Calibration
+
+Factory calibration is performed at the time of device production, relying on test results to directly use the same set of calibration algorithms (parameters). This is based on the premise that the device's deviations are controllable when both the device and the algorithm are robust.
+
+Compared to user calibration, relying solely on factory calibration imposes higher requirements on product design and manufacturing, including:
+
+* Consistency at the time of device production
+* Shelf stability of the device
+* Stability during wear
+
+More specifically:
+
+* Electrical stability of the device
+* Consistency and stability of the design and manufacturing of the electrochemical probe
+* Biocompatibility of the device
+* Correct wearing and usage by the user
+
+## Algorithms
+
+<Cards>
+  <Cards.Card
+    title="Linear Model"
+    href="/docs/algorithm/linear-model"
+  />
+  <Cards.Card
+    title="Autoregressive Model"
+    href="/docs/algorithm/autoregressive-model"
+  />
+  <Cards.Card
+    title="Kalman filter based Model"
+    href="/docs/algorithm/kalman-filter-model"
+  />
+    <Cards.Card
+    title="Bayesian based model"
+    href="/docs/algorithm/bayesian-model"
+  />
+        <Cards.Card
+    title="Misc"
+    href="/docs/algorithm/misc"
+  />
+</Cards>
+
+## Data
+1. `measuredvalue.xlsx` and `measuredvalue.csv` are the original data files, differing only in format. They contain data from a total of 79 patients, with useful columns including: measurement time (measuredat), blood glucose value (blood), CGM electrical signal value (ist), and patient identification number (segmentid). The time interval for each measurement is 5 minutes (there are approximately 20 points with intervals greater than 5 minutes, but considering that the changes in data between two points before and after the interval are much smaller than the changes in data at normal intervals, these points are still treated as 5-minute intervals and have not been specially processed).
+2. `measuredvalue_drop_datetime.csv` retains only the measurement time (measuredat), blood glucose value (blood), CGM electrical signal value (ist), and patient identification number (segmentid), with other columns removed.
+3. `homo_dataset.csv` processes the data into groups of length 142, containing only multiple columns of blood glucose values (blood) and CGM electrical signal values (ist).
+4. `dataset_for_convlv_lg.csv` and `dataset_for_convlv_sm.csv` provide data for the convolution model, with each row containing 10 time-ordered blood glucose data points, the number of days worn during measurement, and the CGM electrical signal value (corresponding to the last blood glucose data point's time). The lg file contains the maximum available data, while the sm file contains only about 1/10 of the lg data.
+5. `data_augment.py`, `data_process.py` and `data_process_with_index.py` are used for data pre-processing.
+
+## Notes on Implementation
+<Callout type="warning" emoji="⚠️">
+Implementer: In this project, the expected nature of the CGM device is that of factory-calibrated devices. In this case, the inverse results of the "Bayesian regression model considering drift" should have good accuracy without the need for calibration for specific devices or specific patients. However, if the robustness of the device is insufficient, such as if the hydrogel layer of the electrochemical probe is not performing well, then this factor can also be considered in the algorithm design. Here, due to experimental conditions and data acquisition limitations, this factor has not been included in the model. Lastly, I have a background in chemistry and biology, so considering these factors, collecting such data, and incorporating them into the model is not too difficult for me.
+</Callout>
+
+## Related Papers
+
+### 1. Modeling the Glucose Sensor Error
+![](/CGM_device_cali_var.jpg)
+
+Four CGM devices worn on the same person exhibit significant deviations in the collected electrical signals (the trend differences between devices are not large). The main source of deviation is the poor consistency between devices. In this case, a set of universal parameters needs to be fitted first, and then, based on the differences between specific devices, a set of parameters suitable for that particular device can be provided through user calibration, as shown in "Toward Calibration-Free Continuous Glucose Monitoring Sensors: Bayesian Calibration Approach Applied to Next-Generation Dexcom Technology."
+
+### 2. Factory-Calibrated Continuous Glucose Sensors: The Science Behind the Technology
+![](/sensitivity.jpg)
+
+The authors from Abbott have proposed key technical points for factory calibration. Abbott devices exhibit good consistency: consistency of sensitivity (across several batches) and stability (within 14 days). In this case, a relatively simple model can achieve factory calibration (all devices share a set of (approximately) universal parameters, without requiring users to configure a specific set of parameters for each device).

@@ -1,0 +1,28 @@
+---
+title: Autoregressive Model
+---
+
+## Autoregressive Model
+
+[Real-time glucose estimation algorithm for continuous glucose monitoring using autoregressive models](https://doi.org/10.1177/193229681000400221)
+
+This method assumes that the blood glucose concentration at a certain moment is related to the blood glucose levels from a previous period, thus applying the autoregressive model to calculate blood glucose from CGM intensity signals. In the validation data, the overall mean and median relative absolute differences (RADs) are 9.6% and 6.7%, respectively. The measurements that meet the International Organization for Standardization (ISO) standards are 88.7%. In the hypoglycemic range, the mean and median RADs are 8.1% and 6.0%, respectively, with ISO standard measurements of 86.7%. The sensitivity and specificity for hypoglycemia detection are 91.5% and 95.0%, respectively.
+
+## Autoregressive
+
+The autoregressive model (AR model) is a common statistical method for handling time series data. Its core idea is to use past values of the same variable (i.e., historical data) to predict the current or future values, assuming a linear relationship between these historical values and the current value. The autoregressive model is particularly suitable for predicting time series data, as it can capture the temporal dependencies in the data.
+
+The autoregressive model has the following characteristics:
+1. Simple: The model is based on linear relationships for predictions, making it straightforward and easy to understand and implement.
+2. Flexible: It can be combined with other models to form more complex model systems, such as the autoregressive integrated moving average model (ARIMA), to improve prediction accuracy and stability.
+3. Time series prediction: It is especially suitable for predicting time series data, as it can capture the temporal dependencies in the data.
+
+However, this method also has certain limitations, such as the necessity for autocorrelation, with the autocorrelation coefficient being crucial. If the autocorrelation coefficient is less than 0.5, it is not advisable to use this method, as the prediction results may be highly inaccurate.
+
+## Limitations
+
+In practice, due to the limitations of the autoregressive model, the stability of this method is insufficient, and the predicted blood glucose concentrations can drift significantly, requiring regular calibration with blood glucose data.
+
+## Implementation
+
+`auto_regression.py`, `auto_regression_lmfit.py`, and `auto_regression_symfit.py` are three files that implement the autoregressive model (AR) using scipy.optimization (not completed), lmfit, and symfit, respectively. The results obtained showed unstable parameters, so the model was not further used for inverse prediction and validation of the model results.

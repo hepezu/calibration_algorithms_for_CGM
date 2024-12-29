@@ -1,0 +1,19 @@
+---
+title: CGM in Deep
+---
+
+## CGM in Deep
+
+The previous section introduced that the CGM device consists of three parts: the electrode, the transmitter, and the receiver. Among them, the most critical component is the electrode. Taking the glucose oxidase method as an example, its working principle is as follows:
+
+1. After the probe is implanted in the subcutaneous tissue, it contains glucose oxidase (GOx), which can catalyze the oxidation of glucose and transfer electrons to the electrode through an electron transfer process, generating a current; this current is positively correlated with glucose concentration (quasi-linear relationship);
+
+2. The circuit board and chip on the CGM device record and process this current, ultimately outputting it in the form of an electrical signal;
+
+3. The strength of the electrical signal is positively correlated with the glucose concentration in the interstitial fluid, requiring an algorithm (calibration algorithm) to infer the glucose concentration in the interstitial fluid, and it can even infer the glucose concentration in the blood (Note: the glucose concentration in the tissue is also positively correlated with the glucose concentration in the blood).
+
+Thus, for the CGM system, its key components can be divided into principles (the chemical principles of measurement, electrode or optical systems), hardware (transmission and reception, electrode or optical systems), and software (calibration algorithms).
+
+Currently, the mainstream CGMs on the market adopt electrochemical methods based on enzymatic chemistry, so the subsequent advanced sections and algorithm codes mainly focus on this type of system.
+
+Optical methods have the advantage of being non-invasive, but currently, their measurement performance is difficult to compare with electrochemical methods.

@@ -1,0 +1,84 @@
+---
+title: 校正算法
+---
+
+import { Cards, Callout } from 'nextra/components'
+
+## 概述
+
+在CGM的测量中，信号的强度与组织液中的葡萄糖浓度有正相关关系，需要通过算法（校准算法），逆推出组织液中的葡萄糖浓度，更进一步还可以逆推出血液中的葡萄糖浓度。
+
+校正过程可分为：用户校准及工厂校正。
+
+### 1. 用户校正
+
+用户校准需要用户使用血糖仪，测量特定时刻的血糖数据，然后将该数据输入到CGM中，算法依赖此标准数据调整输出值，校正各因素产生的偏差。
+
+用户校准需要用户不时地进行血糖测量，用户依从性较差，用户体验不佳，另外，血糖测量时，用户如操作不规范，测量值可能有较大的偏差，导致逆推出的葡萄糖浓度失真。
+
+### 2. 工厂校正
+
+工厂校准为设备出产时，依靠测试结果直接使用同一套校正算法（参数）。其基于在设备和算法有良好稳健性的情况下，设备的偏差是可控的。
+
+相比用户校正，仅采用工厂校正对产品的设计和生产有较高的要求，具体要求包括：
+
+* 设备出厂时的一致性
+* 设备的货架稳定性
+* 佩戴期间的稳定性
+
+更为具体的：
+
+* 设备的电气稳定性
+* 电化学探针的设计以及制造时的一致性和稳定性
+* 设备的生物兼容性
+* 用户的正确佩戴和使用
+
+## 算法
+
+<Cards>
+  <Cards.Card
+    title="线性模型"
+    href="/docs/algorithm/linear-model"
+  />
+  <Cards.Card
+    title="自回归模型"
+    href="/docs/algorithm/autoregressive-model"
+  />
+  <Cards.Card
+    title="基于卡曼滤波器的模型"
+    href="/docs/algorithm/kalman-filter-model"
+  />
+    <Cards.Card
+    title="考虑漂变的相关回归模型"
+    href="/docs/algorithm/bayesian-model"
+  />
+      <Cards.Card
+    title="其他"
+    href="/docs/algorithm/misc"
+  />
+</Cards>
+
+## 数据
+1. `measuredvalue.xlsx`和`measuredvalue.csv`是原始的数据文件，只是格式不一样，里面共有79个病人的数据，有用的列包含：测量时间（measuredat），血糖值(blood)，CGM电信号值（ist）和病人识别号（segmentid）,每次测量的时间间隔为5min（有~20点的间隔大于5min，但考虑到间隔前后两点的数据变化值远小于正常间隔处的数据变化值，这些点依然被视为5min间隔，未作特别处理）。
+2. `measuredvalue_drop_datetime.csv`只保留了测量时间（measuredat），血糖值(blood)，CGM电信号值（ist）和病人识别号（segmentid），删除了其他列。
+3. `homo_dataset.csv`将数据处理为：每组长度为142，只包含血糖值(blood)，CGM电信号值（ist）的多列数据。
+4. `dataset_for_convlv_lg.csv`和`dataset_for_convlv_sm.csv`为convolution模型提供数据，每行数据包含10个依时间排列的血糖数据，测量时的佩戴天数，以及CGM电信号值（对应最后一个血糖数据的时间点），lg包含最大的可利用数据，sm的数据量只有lg的~1/10。
+5. `data_augment.py`，`data_process.py`和`data_process_with_index.py`用于数据预处理。
+
+## 实现说明
+<Callout type="warning" emoji="⚠️">
+实现者：本项目中，预期CGM设备以上工厂校正设备的性质。在这种情况下，“考虑漂变的相关回归模型”的逆推结果，就足以具有良好的准确率，不需要对于特定的设备或特定的病人进行校准。但如果设备的稳健性不足，例如电化学探针的水凝胶层效果不佳，那么在设计算法的时候，可以将这个因素也一并考虑进去。这里，受限于实验条件和数据获取的原因，没有在模型中加入该因素。最后，我本人是化学和生物专业出身，将这些因素考虑进去，采集获取此类数据，并将它们加入到模型中，对我没有太大的难度。
+</Callout>
+
+## 相关资料
+
+### 1. Modeling the Glucose Sensor Error
+![](/CGM_device_cali_var.jpg)
+
+4个CGM设备佩戴到同一个人的身上，采集到的电信号具有极大的偏差（各个设备之间的趋势差异不大）。偏差的主要来源是，设备之间的一致性较差。在这种情况下，需要先拟合出一套通用的参数，再根据具体设备的不同，透过用户校准的方式，给出一套适用于该特定设备的参数。如同 Toward Calibration-Free Continuous Glucose Monitoring Sensors: Bayesian Calibration Approach Applied to Next-Generation Dexcom Technology所示。
+
+### 2. Factory-Calibrated Continuous Glucose Sensors: The Science Behind the Technology
+![](/sensitivity.jpg)
+
+来自雅培的作者提出了工厂校准的关键技术点。雅培设备具有良好一致性：灵敏度的一致性（数个批次）和稳定性（14天内）。在这种情况下，用较为简单的模型，即可实现工厂校准（所有设备共享一套（近似的）通用参数，不需要用户为每个设备另外配置一套特定参数）。
+
